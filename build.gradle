@@ -1,0 +1,98 @@
+plugins {
+    id 'java-library'
+    id 'checkstyle'
+    id 'com.github.spotbugs' version '3.0.0'
+    id 'jacoco'
+}
+
+group 'gg.sep'
+version '1.0-SNAPSHOT'
+
+ext {
+    lombokVersion = '1.18.+'
+    checkstyleVersion = '8.22'
+    spotbugsVersion = '3.1.12'
+    log4jVersion = '2.12.+'
+    junitVersion = '5.5.2'
+}
+
+sourceCompatibility = 11.0
+targetCompatibility = 11.0
+
+
+repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+
+configurations {
+    // bring in checkstyle rules and other build configuration
+    sepBuildConfig
+}
+
+task extractSepConfig(type: Copy) {
+    from {
+        zipTree(configurations.sepBuildConfig.singleFile)
+    }
+    into "${buildDir}/"
+    include "configuration/"
+}
+
+checkstyle {
+    ignoreFailures false
+    configFile file("${buildDir}/configuration/checkstyle/checkstyle.xml")
+    configDir file("${buildDir}/configuration/checkstyle")
+    toolVersion checkstyleVersion
+}
+checkstyleMain.dependsOn extractSepConfig
+checkstyleTest.dependsOn extractSepConfig
+
+spotbugs {
+    ignoreFailures false
+    toolVersion spotbugsVersion
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        html {
+            enabled = true
+        }
+        xml {
+            enabled = false
+        }
+    }
+}
+
+// unchecked and deprecation should produce warnings
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+dependencies {
+    // common libraries
+    implementation 'com.google.code.gson:gson:2.8.+'
+    implementation 'org.apache.logging.log4j:log4j-api:2.12.1'
+
+    // core dependencies
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-core:1.4'
+
+    // test
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+
+    // build
+    sepBuildConfig "com.github.Seputaes:sep-java-build-config:0.2.0"
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    compileOnly "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+}
+
+test {
+    // Use junit platform for unit tests
+    useJUnitPlatform()
+}
