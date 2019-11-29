@@ -27,8 +27,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -127,7 +127,8 @@ public class Route {
      * @return An object array to be passed into the {@link Method#invoke(Object, Object...)} method.
      */
     private Object[] buildArgs(final AwsProxyRequest request) {
-        final List<Parameter> parameters = Arrays.asList(method.getParameters());
+        final List<Parameter> parameters = new ArrayList<>();
+        Collections.addAll(parameters, method.getParameters());
         final List<Object> argsList = new ArrayList<>();
 
         if (requestIsFirstParameter(parameters)) {
@@ -170,16 +171,18 @@ public class Route {
         final Annotation annotation = annotations[0];
 
         final Class<? extends Annotation> type = annotation.annotationType();
-        final String value = RouterUtils.getAnnotationField(annotation, "value");
 
         if (type.equals(Query.class)) {
+            final String value = RouterUtils.getAnnotationField(annotation, "value");
             final String query = request.getMultiValueQueryStringParameters().getFirst(value);
             argsList.add(query);
         } else if (type.equals(Header.class)) {
+            final String value = RouterUtils.getAnnotationField(annotation, "value");
             final String headerValue = request.getMultiValueHeaders().getFirst(value);
             argsList.add(headerValue);
 
         } else if (type.equals(Path.class)) {
+            final String value = RouterUtils.getAnnotationField(annotation, "value");
             final TokenConverter tokenConverter = pathParameters.get(value);
             if (tokenConverter == null) {
                 throw new IllegalStateException("Unknown token for Path parameter: " + value);
@@ -197,6 +200,8 @@ public class Route {
             } else {
                 argsList.add(bodyValue);
             }
+        } else {
+            throw new IllegalStateException("Unknown route parameter annotation: " + type);
         }
     }
 
@@ -214,7 +219,8 @@ public class Route {
             return false;
         }
         final Route otherRoute = (Route) other;
-        return routeRequestMethod.equals(otherRoute.getRouteRequestMethod()) && pattern.equals(otherRoute.getPattern());
+        return routeRequestMethod.equals(otherRoute.getRouteRequestMethod()) &&
+            pattern.pattern().equals(otherRoute.getPattern().pattern());
     }
 
     /**
@@ -223,6 +229,6 @@ public class Route {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(routeRequestMethod, pattern);
+        return Objects.hash(routeRequestMethod, pattern.pattern());
     }
 }
