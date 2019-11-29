@@ -22,9 +22,9 @@
 
 package gg.sep.avenue.router.converter;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Converter for turning route token strings into ... strings.
@@ -58,7 +58,12 @@ public class StringTokenConverter implements TokenConverter<String> {
      */
     @Override
     public String fromURLPath(final String value) {
-        return URLDecoder.decode(value, StandardCharsets.UTF_8);
+        try {
+            return URLDecoder.decode(value, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
@@ -66,6 +71,10 @@ public class StringTokenConverter implements TokenConverter<String> {
      */
     @Override
     public String toURLPath(final String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
