@@ -59,7 +59,7 @@ public class BasicLambdaProxyHandler extends AbstractLambdaProxyHandler {
         beforeHandle(request);
 
         final Optional<Route> foundRoute = findRoute(request);
-        if (foundRoute.isEmpty()) {
+        if (!foundRoute.isPresent()) {
             sendResponse(notFound(), output);
             return;
         }
