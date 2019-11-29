@@ -16,8 +16,8 @@ ext {
     junitVersion = '5.5.2'
 }
 
-sourceCompatibility = 11.0
-targetCompatibility = 11.0
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 
 repositories {
@@ -62,6 +62,25 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
         }
     }
 }
+
+jacocoTestReport {
+    reports {
+        html.enabled = true
+        html.destination file("${buildDir}/reports/jacoco/html")
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.0 // TODO
+            }
+        }
+    }
+}
+jacocoTestReport.dependsOn test // TODO
+check.dependsOn jacocoTestCoverageVerification
 
 // unchecked and deprecation should produce warnings
 compileJava {
