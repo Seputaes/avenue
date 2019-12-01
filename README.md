@@ -3,7 +3,7 @@
 -----------------------------
 ![Status](https://img.shields.io/badge/Status-Experimental-important)
 [![Build Status](https://travis-ci.org/Seputaes/avenue.svg?branch=master)](https://travis-ci.org/Seputaes/avenue)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://seputaes.mit-license.org/)
 [![made-with-java](https://img.shields.io/badge/Made%20with-Java-1f425f.svg)](https://en.wikipedia.org/wiki/Java_%28programming_language%29)
 [![GitHub issues](https://img.shields.io/github/issues/Seputaes/avenue.svg)](https://GitHub.com/seputaes/avenue/issues/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
@@ -53,7 +53,7 @@ public class MyLambdaHandler extends BasicLambdaProxyHandler {
 }
 ```
 
-##### Step 3: Set your handler class as the Lambda's handler:
+##### Step 3: Set your parameterEvaluator class as the Lambda's parameterEvaluator:
 Eg: `path.to.MyHandler::handleRequest`
 
 
