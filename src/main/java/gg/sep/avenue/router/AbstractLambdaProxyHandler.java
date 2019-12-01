@@ -178,13 +178,6 @@ public abstract class AbstractLambdaProxyHandler implements LambdaProxyHandler {
         sendResponse(response, output);
     }
 
-    protected AwsProxyResponse notFound() {
-        final AwsProxyResponse response = new AwsProxyResponse(404);
-        response.addHeader("Content-Type", "text/html");
-        response.setBody("Not found");
-        return response;
-    }
-
     /**
      * Serializes the {@link AwsProxyResponse} back to JSON, and sends the response to the
      * given {@link OutputStream}. The stream is then closed.

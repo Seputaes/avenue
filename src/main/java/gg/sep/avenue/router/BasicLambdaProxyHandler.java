@@ -31,6 +31,7 @@ import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
+import org.apache.http.HttpStatus;
 
 import gg.sep.avenue.router.core.Route;
 
@@ -62,7 +63,12 @@ public class BasicLambdaProxyHandler extends AbstractLambdaProxyHandler {
 
         final Optional<Route> foundRoute = findRoute(request);
         if (!foundRoute.isPresent()) {
-            sendResponse(notFound(), output);
+            final AwsProxyResponse response = AwsResponseBuilder.newBuilder()
+                .status(HttpStatus.SC_NOT_FOUND)
+                .html()
+                .stringBody("Not found")
+                .build();
+            sendResponse(response, output);
             return;
         }
         final Route route = foundRoute.get();
