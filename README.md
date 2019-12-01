@@ -34,9 +34,9 @@ Avenue is tested to be working for both AWS Lambda's JDK8 and JDK11 runtimes.
 public class MyRoutes extends AbstractRouteController {
     @GET("/hello/<string:name>")
     public AwsProxyResponse home(@Path("name") final String name) {
-        return new ResponseBuilder()
+        return AwsResponseBuilder.newBuilder()
             .html()
-            .body("Hello, " + name + "!")
+            .stringBody("Hello, " + name + "!")
             .build();
     }
 }
