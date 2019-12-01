@@ -1,4 +1,4 @@
-package gg.sep.avenue.router;
+package gg.sep.avenue.router.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -18,6 +18,7 @@ import com.amazonaws.serverless.proxy.model.Headers;
 import com.amazonaws.serverless.proxy.model.MultiValuedTreeMap;
 import org.junit.jupiter.api.Test;
 
+import gg.sep.avenue.router.RouteController;
 import gg.sep.avenue.router.converter.TokenConverter;
 import gg.sep.avenue.router.data.TestRouteController;
 

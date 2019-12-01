@@ -27,6 +27,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import gg.sep.avenue.router.core.RoutePathParser;
+
 /**
  * Annotation used to designate a method which handles HTTP {@code OPTIONS} requests.
  *

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package gg.sep.avenue.router;
+package gg.sep.avenue.router.core;
 
 import java.lang.annotation.Annotation;
 import java.util.List;

@@ -20,26 +20,29 @@
  * SOFTWARE.
  */
 
-package gg.sep.avenue.router;
+package gg.sep.avenue.router.core;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
+import gg.sep.avenue.router.AbstractRouteController;
+import gg.sep.avenue.router.GET;
+import gg.sep.avenue.router.PATCH;
+import gg.sep.avenue.router.POST;
+import gg.sep.avenue.router.RouteController;
 import gg.sep.avenue.router.converter.TokenConverter;
 
 /**
@@ -64,7 +67,7 @@ import gg.sep.avenue.router.converter.TokenConverter;
  * {@link AbstractRouteController}
  */
 @Builder
-@Getter
+@Getter(AccessLevel.PACKAGE)
 public class Route {
     private RouteRequestMethod routeRequestMethod;
     private Method method;
@@ -82,12 +85,12 @@ public class Route {
     public AwsProxyResponse invoke(final AwsProxyRequest request) throws Exception {
         final Object[] invokeArgs = buildArgs(request);
         final Object returnVal = method.invoke(controller, invokeArgs);
-        if (returnVal instanceof AwsProxyResponse) {
-            return (AwsProxyResponse) returnVal;
+        if (!(returnVal instanceof AwsProxyResponse)) {
+            throw new IllegalStateException(
+                String.format("Expected AwsProxyResponse from method invocation. method=%s, returnVal=%s",
+                    method, returnVal));
         }
-        throw new IllegalStateException(
-            String.format("Expected AwsProxyResponse from method invocation. method=%s, returnVal=%s",
-                method, returnVal));
+        return (AwsProxyResponse) returnVal;
     }
 
     /**
@@ -137,7 +140,7 @@ public class Route {
         }
 
         // parse the remaining parameters
-        parameters.forEach(p -> this.addParameterToArgs(p, request, argsList));
+        parameters.forEach(p -> argsList.add(getParameterValue(p, request)));
         return argsList.toArray();
     }
 
@@ -159,9 +162,8 @@ public class Route {
      *
      * @param parameter The parameter to parse.
      * @param request The Lambda request which contains the data that we be passed to the parameter.
-     * @param argsList List that will be used to append the parameter's value.
      */
-    private void addParameterToArgs(final Parameter parameter, final AwsProxyRequest request, final List<Object> argsList) {
+    private Object getParameterValue(final Parameter parameter, final AwsProxyRequest request) {
         final Annotation[] annotations = parameter.getAnnotations();
         // route parameters (excluding Request) must have exactly 1 annotation
         // in order to safely invoke it
@@ -169,40 +171,12 @@ public class Route {
             throw new IllegalStateException("Route parameters must have exactly 1 annotation");
         }
         final Annotation annotation = annotations[0];
-
         final Class<? extends Annotation> type = annotation.annotationType();
-
-        if (type.equals(Query.class)) {
-            final String value = RouterUtils.getAnnotationField(annotation, "value");
-            final String query = request.getMultiValueQueryStringParameters().getFirst(value);
-            argsList.add(query);
-        } else if (type.equals(Header.class)) {
-            final String value = RouterUtils.getAnnotationField(annotation, "value");
-            final String headerValue = request.getMultiValueHeaders().getFirst(value);
-            argsList.add(headerValue);
-
-        } else if (type.equals(Path.class)) {
-            final String value = RouterUtils.getAnnotationField(annotation, "value");
-            final TokenConverter tokenConverter = pathParameters.get(value);
-            if (tokenConverter == null) {
-                throw new IllegalStateException("Unknown token for Path parameter: " + value);
-            }
-            final Matcher matcher = pattern.matcher(request.getPath());
-            matcher.find(0); // matches the whole string, no repeats
-            final String tokenValue = matcher.group(value);
-            argsList.add(tokenConverter.fromURLPath(tokenValue));
-        } else if (type.equals(Body.class)) {
-            final String bodyValue = request.getBody();
-
-            if (request.isBase64Encoded()) {
-                final byte[] bytes = Base64.getDecoder().decode(bodyValue.getBytes(StandardCharsets.UTF_8));
-                argsList.add(bytes);
-            } else {
-                argsList.add(bodyValue);
-            }
-        } else {
+        final ParameterUtils.ParameterEvaluator parameterEvaluator = ParameterUtils.getEvaluator(type);
+        if (parameterEvaluator == null) {
             throw new IllegalStateException("Unknown route parameter annotation: " + type);
         }
+        return parameterEvaluator.getParamValue(annotation, request, this);
     }
 
     /**

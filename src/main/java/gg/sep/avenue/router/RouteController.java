@@ -24,6 +24,9 @@ package gg.sep.avenue.router;
 
 import java.util.Set;
 
+import gg.sep.avenue.router.core.Route;
+import gg.sep.avenue.router.core.RouteRequestMethod;
+
 /**
  * Interface for modeling route controllers which are made up
  * of individual methods which handle HTTP requests.

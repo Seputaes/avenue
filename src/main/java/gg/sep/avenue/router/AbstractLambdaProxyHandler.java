@@ -41,6 +41,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
+import gg.sep.avenue.router.core.Route;
+
 /**
  * Abstract implementation of {@link LambdaProxyHandler} that provides
  * most of the default functionality for handling AWS Lambda events.
@@ -86,10 +88,8 @@ public abstract class AbstractLambdaProxyHandler implements LambdaProxyHandler {
 
         if (matchingRoutes.size() > 1) {
             final String msg = String.format(
-                "More than one route handles request. path=%s, routes=%s, patterns=%s",
-                request.getPath(), matchingRoutes,
-                matchingRoutes.stream().map(Route::getPattern).collect(Collectors.toList())
-            );
+                "More than one route handles request. path=%s, routes=%s",
+                request.getPath(), matchingRoutes);
             log.error(msg);
             throw new IllegalStateException(msg);
         }

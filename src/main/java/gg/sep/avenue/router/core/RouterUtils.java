@@ -20,18 +20,22 @@
  * SOFTWARE.
  */
 
-package gg.sep.avenue.router;
+package gg.sep.avenue.router.core;
 
 import java.lang.annotation.Annotation;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
+import gg.sep.avenue.router.GET;
+import gg.sep.avenue.router.HEAD;
+import gg.sep.avenue.router.POST;
+
 /**
  * Utilities for several shared operations throughout the router.
  */
 @UtilityClass
-class RouterUtils {
+public class RouterUtils {
 
     /**
      * Gets the string value of an annotation's field.
@@ -45,7 +49,7 @@ class RouterUtils {
      * @return The string value set on the field.
      */
     @SneakyThrows({ReflectiveOperationException.class, ClassCastException.class})
-    static String getAnnotationField(final Annotation annotation, final String field) {
+    public static String getAnnotationField(final Annotation annotation, final String field) {
         final Object pathValue = annotation.getClass().getDeclaredMethod(field).invoke(annotation);
         if (pathValue instanceof String) {
             return (String) pathValue;
@@ -65,7 +69,7 @@ class RouterUtils {
      * @return The paths string array on a route method annotation.
      */
     @SneakyThrows({ReflectiveOperationException.class, ClassCastException.class})
-    static String[] getAnnotationPaths(final Annotation annotation) {
+    public static String[] getAnnotationPaths(final Annotation annotation) {
         final Object pathValue = annotation.getClass().getDeclaredMethod("paths").invoke(annotation);
         if (pathValue.getClass().isArray()) {
             return (String[]) pathValue;

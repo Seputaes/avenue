@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package gg.sep.avenue.router;
+package gg.sep.avenue.router.core;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +28,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import gg.sep.avenue.router.GET;
+import gg.sep.avenue.router.HEAD;
+import gg.sep.avenue.router.POST;
+import gg.sep.avenue.router.Path;
 import gg.sep.avenue.router.converter.IntegerTokenConverter;
 import gg.sep.avenue.router.converter.StringTokenConverter;
 import gg.sep.avenue.router.converter.TokenConverter;

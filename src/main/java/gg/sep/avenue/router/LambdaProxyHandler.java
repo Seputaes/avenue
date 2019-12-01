@@ -31,6 +31,8 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 
+import gg.sep.avenue.router.core.Route;
+
 /**
  * {@link LambdaProxyHandler} is an extension of the AWS Lambda {@link RequestStreamHandler},
  * which allows for "hooks" that wrap the input request and output response.

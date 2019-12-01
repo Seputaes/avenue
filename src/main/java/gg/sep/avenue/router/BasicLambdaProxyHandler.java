@@ -32,6 +32,8 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
+import gg.sep.avenue.router.core.Route;
+
 /**
  * Basic implementation of {@link LambdaProxyHandler} which services the most basic needs.
  *

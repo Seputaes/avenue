@@ -38,6 +38,11 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 
+import gg.sep.avenue.router.core.Route;
+import gg.sep.avenue.router.core.RoutePathParser;
+import gg.sep.avenue.router.core.RouteRequestMethod;
+import gg.sep.avenue.router.core.RouterUtils;
+
 /**
  * Abstract implementation of a {@link RouteController}.
  *
@@ -80,7 +85,6 @@ public abstract class AbstractRouteController implements RouteController {
                 if (!validAnnotations.contains(annotation.annotationType())) {
                     continue;
                 }
-
                 // build the route for this method
                 final Set<Route> routes = buildRoutes(annotation, method);
                 // check if there's a duplicate route within the controller

@@ -22,7 +22,7 @@
 
 package gg.sep.avenue.router.converter;
 
-import gg.sep.avenue.router.RoutePathParser;
+import gg.sep.avenue.router.core.RoutePathParser;
 
 /**
  * Describes a class that is used to parse route pattern tokens into their associated
