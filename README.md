@@ -60,3 +60,6 @@ Eg: `path.to.MyHandler::handleRequest`
 ## Contributing
 Avenue is in its early stages of development. It functions adequately for the most basic
 of routing tasks, but is slowly developing into something more fully featured.
+
+I welcome contributions ranging from bug fixes to new features. If you have an idea for a
+feature, open an [issue](https://github.com/seputaes/avenue/issues) describing its purpose.
