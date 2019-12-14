@@ -24,11 +24,14 @@ package gg.sep.avenue.router.converter;
 
 import java.util.UUID;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * Token converter for UUID patterns in route paths.
  *
  * See: {@link TokenConverter}.
  */
+@EqualsAndHashCode(callSuper = false)
 public class UUIDTokenConverter implements TokenConverter<UUID> {
     private static final String UUID_PATTERN = "[A-Fa-f0-9]{8}" +
         "-" +

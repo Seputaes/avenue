@@ -26,6 +26,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * Converter for turning route token strings into ... strings.
  *
@@ -33,6 +35,7 @@ import java.net.URLEncoder;
  *
  * See: {@link TokenConverter}.
  */
+@EqualsAndHashCode(callSuper = false)
 public class StringTokenConverter implements TokenConverter<String> {
     private static final String TOKEN_PATTERN = "[^/]{1,}";
     private static final String NAME = "string";

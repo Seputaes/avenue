@@ -22,11 +22,14 @@
 
 package gg.sep.avenue.router.converter;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * Converter for turning route token strings into Integers.
  *
  * See: {@link TokenConverter}.
  */
+@EqualsAndHashCode(callSuper = false)
 public class IntegerTokenConverter implements TokenConverter<Integer> {
 
     private static final String NAME = "int";
