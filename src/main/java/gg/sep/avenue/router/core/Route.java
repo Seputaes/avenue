@@ -72,7 +72,7 @@ public class Route {
     private RouteRequestMethod routeRequestMethod;
     private Method method;
     private RouteController controller;
-    private Map<String, TokenConverter> pathParameters;
+    private Map<String, TokenConverter<?>> pathParameters;
     private Pattern pattern;
 
     /**

@@ -72,7 +72,7 @@ public final class RoutePathParser {
             ">)?"
     );
 
-    private Map<String, TokenConverter> tokenConverters = new ConcurrentHashMap<>();
+    private Map<String, TokenConverter<?>> tokenConverters = new ConcurrentHashMap<>();
 
     private RoutePathParser() {}
 
@@ -84,7 +84,7 @@ public final class RoutePathParser {
      *
      * @param tokenConverter The token converter to add to the parser.
      */
-    public void addTokenConverter(final TokenConverter tokenConverter) {
+    public void addTokenConverter(final TokenConverter<?> tokenConverter) {
         final String tokenName = tokenConverter.getName();
         if (tokenConverters.putIfAbsent(tokenName, tokenConverter) != null) {
             throw new IllegalArgumentException(
@@ -106,16 +106,17 @@ public final class RoutePathParser {
 
         final Matcher matcher = TOKEN_BUILDER_PATTERN.matcher(routePath);
         while (matcher.find()) {
+            // static portion cannot ever be null, since even an empty string or a token
+            // by itself will result in an empty string static portion
             final String staticPortion = matcher.group("static");
-            if (staticPortion != null) {
-                finalPatternBuilder.append(staticPortion);
-            }
+            finalPatternBuilder.append(staticPortion);
+
             final String converter = matcher.group("converter");
             final String variable = matcher.group("variable");
             if (converter == null) { // converter will be null if the match consists only of a static group
                 continue;
             }
-            final TokenConverter tokenConverter = tokenConverters.get(converter);
+            final TokenConverter<?> tokenConverter = tokenConverters.get(converter);
             if (tokenConverter == null) {
                 throw new IllegalStateException("Unknown token converter for type: " + converter);
             }
@@ -139,8 +140,8 @@ public final class RoutePathParser {
      * @return Mapping of path parameter IDs to the token converters used
      *         to parse that portion of the path.
      */
-    public Map<String, TokenConverter> buildPathParameters(final String routePath) {
-        final Map<String, TokenConverter> usedTypes = new HashMap<>();
+    public Map<String, TokenConverter<?>> buildPathParameters(final String routePath) {
+        final Map<String, TokenConverter<?>> usedTypes = new HashMap<>();
         final Matcher matcher = TOKEN_BUILDER_PATTERN.matcher(routePath);
         while (matcher.find()) {
             final String converter = matcher.group("converter");
@@ -148,7 +149,7 @@ public final class RoutePathParser {
             if (converter == null) {
                 continue;
             }
-            final TokenConverter tokenConverter = tokenConverters.get(converter);
+            final TokenConverter<?> tokenConverter = tokenConverters.get(converter);
             if (tokenConverter == null) {
                 throw new IllegalStateException("Unknown token converter for type: " + converter);
             }
@@ -184,14 +185,14 @@ public final class RoutePathParser {
      * chain construct a parser with multiple {@link TokenConverter}'s.
      */
     public static final class Builder {
-        private Map<String, TokenConverter> tokenConverters = new HashMap<>();
+        private Map<String, TokenConverter<?>> tokenConverters = new HashMap<>();
 
         /**
          * Adds a new token converter to the builder.
          * @param tokenConverter The token converter to add to the builder.
          * @return The builder instance.
          */
-        public Builder withTokenConverter(final TokenConverter tokenConverter) {
+        public Builder withTokenConverter(final TokenConverter<?> tokenConverter) {
             this.tokenConverters.put(tokenConverter.getName(), tokenConverter);
             return this;
         }

@@ -113,7 +113,7 @@ class ParameterUtils {
      */
     private static Object path(final Annotation annotation, final AwsProxyRequest request, final Route route) {
         final String value = RouterUtils.getAnnotationField(annotation, "value");
-        final TokenConverter tokenConverter = route.getPathParameters().get(value);
+        final TokenConverter<?> tokenConverter = route.getPathParameters().get(value);
         if (tokenConverter == null) {
             throw new IllegalStateException("Unknown token for Path parameter: " + value);
         }

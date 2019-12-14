@@ -56,7 +56,7 @@ public class RouteTest {
     }
 
     private static Route route(final String routePath, final RouteController controller,
-                               final Method routeMethod, final Map<String, TokenConverter> pathParameters) {
+                               final Method routeMethod, final Map<String, TokenConverter<?>> pathParameters) {
         return Route.builder()
             .routeRequestMethod(RouteRequestMethod.GET)
             .controller(controller)
@@ -219,7 +219,7 @@ public class RouteTest {
         final AwsProxyRequest request = new AwsProxyRequest();
         request.setPath("/foo");
         final RouteController controller = new TestRouteController();
-        final Map<String, TokenConverter> pathParameters = new HashMap<>();
+        final Map<String, TokenConverter<?>> pathParameters = new HashMap<>();
         final Route route = route("/", controller,
             controller.getClass().getMethod("unknownTokenType", Object.class), pathParameters);
 
