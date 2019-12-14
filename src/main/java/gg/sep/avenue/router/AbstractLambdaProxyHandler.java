@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -53,7 +53,7 @@ import gg.sep.avenue.router.core.Route;
 public abstract class AbstractLambdaProxyHandler implements LambdaProxyHandler {
 
     @Getter(AccessLevel.PROTECTED)
-    private Gson gson;
+    private ObjectMapper objectMapper;
 
     @Getter(AccessLevel.PROTECTED)
     private Set<RouteController> registeredControllers = ConcurrentHashMap.newKeySet();
@@ -62,13 +62,13 @@ public abstract class AbstractLambdaProxyHandler implements LambdaProxyHandler {
     private Set<Route> registeredRoutes = ConcurrentHashMap.newKeySet();
 
     /**
-     * Creates an instance of the class using the specified {@link Gson} class,
+     * Creates an instance of the class using the specified {@link ObjectMapper} class,
      * which might contain custom type adapters for your own needs.
      *
-     * @param gson Instance of {@link Gson} to use.
+     * @param objectMapper Instance of {@link ObjectMapper} to use.
      */
-    public AbstractLambdaProxyHandler(final Gson gson) {
-        this.gson = gson;
+    public AbstractLambdaProxyHandler(final ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -137,9 +137,9 @@ public abstract class AbstractLambdaProxyHandler implements LambdaProxyHandler {
      * {@inheritDoc}
      */
     @Override
-    public AwsProxyRequest parseInput(final InputStream inputStream) {
+    public AwsProxyRequest parseInput(final InputStream inputStream) throws IOException {
         final Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        return gson.fromJson(reader, AwsProxyRequest.class);
+        return objectMapper.readValue(reader, AwsProxyRequest.class);
     }
 
     /**
@@ -187,7 +187,7 @@ public abstract class AbstractLambdaProxyHandler implements LambdaProxyHandler {
      * @throws IOException Exception thrown if writing to or closing the {@link OutputStream} fails.
      */
     protected void sendResponse(final AwsProxyResponse response, final OutputStream outputStream) throws IOException {
-        final String payload = gson.toJson(response);
+        final String payload = objectMapper.writeValueAsString(response);
         outputStream.write(payload.getBytes(StandardCharsets.UTF_8));
         outputStream.close();
     }

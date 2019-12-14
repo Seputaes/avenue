@@ -30,7 +30,7 @@ import java.util.Optional;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpStatus;
 
 import gg.sep.avenue.router.core.Route;
@@ -45,10 +45,10 @@ import gg.sep.avenue.router.core.Route;
 public class BasicLambdaProxyHandler extends AbstractLambdaProxyHandler {
 
     /**
-     * Initializes the proxy handler with a default {@link Gson} object.
+     * Initializes the proxy handler with a default {@link ObjectMapper} object.
      */
     public BasicLambdaProxyHandler() {
-        super(new Gson());
+        super(new ObjectMapper());
     }
 
     /**

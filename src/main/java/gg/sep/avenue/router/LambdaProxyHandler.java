@@ -63,12 +63,13 @@ public interface LambdaProxyHandler extends RequestStreamHandler {
      *
      * <p>In most situations, the implementation that is present on
      * {@link AbstractLambdaProxyHandler#parseInput} will be sufficient, as it just
-     * parses the JSON into the object with a default {@link com.google.gson.Gson} object.
+     * parses the JSON into the object with a default {@link com.fasterxml.jackson.databind.ObjectMapper} object.
      *
      * @param inputStream The raw input stream passed from the Lambda runtime.
+     * @throws IOException Exception thrown if parsing the input into an {@link AwsProxyRequest} fails.
      * @return The parsed {@link AwsProxyRequest} from the Lambda's event input.
      */
-    AwsProxyRequest parseInput(InputStream inputStream);
+    AwsProxyRequest parseInput(InputStream inputStream) throws IOException;
 
     /**
      * Hook which can be used to perform actions on the {@link AwsProxyRequest} prior to
