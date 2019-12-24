@@ -155,6 +155,9 @@ public final class AwsResponseBuilder {
      * @param value Value of the header to replace/update.
      */
     private void replaceHeader(final String name, final String value) {
+        if (response.getMultiValueHeaders() == null) {
+            response.setMultiValueHeaders(new Headers());
+        }
         final Headers currentHeaders = response.getMultiValueHeaders();
         currentHeaders.remove(name);
         currentHeaders.putSingle(name, value);
