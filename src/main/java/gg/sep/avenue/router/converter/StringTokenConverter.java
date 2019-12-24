@@ -75,7 +75,7 @@ public class StringTokenConverter implements TokenConverter<String> {
     @Override
     public String toURLPath(final String value) {
         try {
-            return URLEncoder.encode(value, "UTF-8");
+            return URLEncoder.encode(value, "UTF-8").replace("+", "%20");
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
