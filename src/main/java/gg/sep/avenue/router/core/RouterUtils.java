@@ -48,7 +48,7 @@ public class RouterUtils {
      * @param field The field to get on the annotation.
      * @return The string value set on the field.
      */
-    @SneakyThrows({ReflectiveOperationException.class, ClassCastException.class})
+    @SneakyThrows({ReflectiveOperationException.class})
     public static String getAnnotationField(final Annotation annotation, final String field) {
         final Object pathValue = annotation.getClass().getDeclaredMethod(field).invoke(annotation);
         if (pathValue instanceof String) {
@@ -68,7 +68,7 @@ public class RouterUtils {
      * @param annotation The annotation for which to get the paths field.
      * @return The paths string array on a route method annotation.
      */
-    @SneakyThrows({ReflectiveOperationException.class, ClassCastException.class})
+    @SneakyThrows({ReflectiveOperationException.class})
     public static String[] getAnnotationPaths(final Annotation annotation) {
         final Object pathValue = annotation.getClass().getDeclaredMethod("paths").invoke(annotation);
         if (pathValue.getClass().isArray()) {
