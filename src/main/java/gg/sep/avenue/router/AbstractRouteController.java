@@ -67,7 +67,7 @@ public abstract class AbstractRouteController implements RouteController {
      * Constructs the route controller using the default path parser.
      */
     protected AbstractRouteController() {
-        this.parser = RoutePathParser.defaultParser();
+        this(RoutePathParser.defaultParser());
     }
 
     /**
